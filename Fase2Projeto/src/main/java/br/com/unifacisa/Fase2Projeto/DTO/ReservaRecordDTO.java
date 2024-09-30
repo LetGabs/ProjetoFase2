@@ -21,12 +21,12 @@ public class ReservaRecordDTO {
     private LocalDate dataCheckout;
 
     // Hóspede da reserva é obrigatório
-    @NotNull(message = "O hóspede é obrigatório")
-    private HospedeRecordDTO hospede;
+    @NotNull(message = "O hotelId é obrigatório")
+    private Integer hospedeId;
 
     // Quarto da reserva é obrigatório
     @NotNull(message = "O quarto é obrigatório")
-    private QuartoRecordDTO quarto;
+    private Integer quartoId;
 
     // Getters e Setters
     public Integer getId() {
@@ -53,19 +53,19 @@ public class ReservaRecordDTO {
         this.dataCheckout = dataCheckout;
     }
 
-    public @NotNull(message = "O hóspede é obrigatório") HospedeRecordDTO getHospede() {
-        return hospede;
+    public Integer getHospedeId() {
+        return hospedeId;
     }
 
-    public void setHospede(HospedeRecordDTO hospede) {
-        this.hospede = hospede;
+    public void setHospedeId(Integer hospedeId) {
+        this.hospedeId = hospedeId;
     }
 
-    public @NotNull(message = "O quarto é obrigatório") QuartoRecordDTO getQuarto() {
-        return quarto;
+    public Integer getQuartoId() {
+        return quartoId;
     }
 
-    public void setQuarto(QuartoRecordDTO quarto) {
-        this.quarto = quarto;
+    public void setQuartoId(Integer quartoId) {
+        this.quartoId = quartoId;
     }
 }

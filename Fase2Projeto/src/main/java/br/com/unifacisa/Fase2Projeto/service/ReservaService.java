@@ -18,6 +18,7 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final HospedeService hospedeService;
     private final QuartoService quartoService;
+
     @Autowired
     public ReservaService(ReservaRepository reservaRepository, HospedeService hospedeService, QuartoService quartoService) {
         this.reservaRepository = reservaRepository;
@@ -31,18 +32,16 @@ public class ReservaService {
         reserva.setDataCheckout(reservaRecordDTO.getDataCheckout());
 
         // Buscando o hóspede pelo ID
-        Optional<Hospede> hospedeOpt = hospedeService.findById(reservaRecordDTO.getHospede().getId());
-        if (hospedeOpt.isEmpty()) {
-            throw new IllegalArgumentException("Hóspede não encontrado");
-        }
-        reserva.setHospede(hospedeOpt.get());
+        Hospede hospede = hospedeService.findById(reservaRecordDTO.getHospedeId())
+                .orElseThrow(() -> new EntityNotFoundException("Hóspede não encontrado com o ID: "
+                        + reservaRecordDTO.getHospedeId()));
+        reserva.setHospede(hospede);
 
         // Buscando o quarto pelo ID
-        Optional<Quarto> quartoOpt = quartoService.findById(reservaRecordDTO.getQuarto().getId());
-        if (quartoOpt.isEmpty()) {
-            throw new IllegalArgumentException("Quarto não encontrado");
-        }
-        reserva.setQuarto(quartoOpt.get());
+        Quarto quarto = quartoService.findById(reservaRecordDTO.getQuartoId())
+                .orElseThrow(() -> new EntityNotFoundException("Quarto não encontrado com o ID: "
+                        + reservaRecordDTO.getQuartoId()));
+        reserva.setQuarto(quarto);
 
         return reservaRepository.save(reserva);
     }
@@ -56,45 +55,38 @@ public class ReservaService {
     }
 
     public void delete(Integer id) {
+        if (!reservaRepository.existsById(id)) {
+            throw new EntityNotFoundException("Reserva não encontrada com o ID: " + id);
+        }
         reservaRepository.deleteById(id);
     }
 
     public Reserva update(Integer id, ReservaRecordDTO reservaRecordDTO) {
         // Procura a reserva existente pelo ID
-        Optional<Reserva> optionalReserva = reservaRepository.findById(id);
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada com o ID: " + id));
 
-        if (optionalReserva.isPresent()) {
-            Reserva reserva = optionalReserva.get();
+        // Atualiza os campos da reserva com os dados do DTO
+        reserva.setDataCheckin(reservaRecordDTO.getDataCheckin());
+        reserva.setDataCheckout(reservaRecordDTO.getDataCheckout());
 
-            // Atualiza os campos da reserva com os dados do DTO
-            reserva.setDataCheckin(reservaRecordDTO.getDataCheckin());
-            reserva.setDataCheckout(reservaRecordDTO.getDataCheckout());
-
-            // Verificando e atualizando o hóspede
-            if (reservaRecordDTO.getHospede() != null && reservaRecordDTO.getHospede().getId() != null) {
-                Optional<Hospede> hospedeOpt = hospedeService.findById(reservaRecordDTO.getHospede().getId());
-                if (hospedeOpt.isEmpty()) {
-                    throw new IllegalArgumentException("Hóspede não encontrado");
-                }
-                reserva.setHospede(hospedeOpt.get());
-            }
-
-            // Verificando e atualizando o quarto
-            if (reservaRecordDTO.getQuarto() != null && reservaRecordDTO.getQuarto().getId() != null) {
-                Optional<Quarto> quartoOpt = quartoService.findById(reservaRecordDTO.getQuarto().getId());
-                if (quartoOpt.isEmpty()) {
-                    throw new IllegalArgumentException("Quarto não encontrado");
-                }
-                reserva.setQuarto(quartoOpt.get());
-            }
-
-            // Salva e retorna a reserva atualizada
-            return reservaRepository.save(reserva);
-        } else {
-            throw new EntityNotFoundException("Reserva não encontrada com o ID: " + id);
+        // Verificando e atualizando o hóspede
+        if (reservaRecordDTO.getHospedeId() != null) {
+            Hospede hospede = hospedeService.findById(reservaRecordDTO.getHospedeId())
+                    .orElseThrow(() -> new EntityNotFoundException("Hóspede não encontrado com o ID: "
+                            + reservaRecordDTO.getHospedeId()));
+            reserva.setHospede(hospede);
         }
+
+        // Verificando e atualizando o quarto
+        if (reservaRecordDTO.getQuartoId() != null) {
+            Quarto quarto = quartoService.findById(reservaRecordDTO.getQuartoId())
+                    .orElseThrow(() -> new EntityNotFoundException("Quarto não encontrado com o ID: "
+                            + reservaRecordDTO.getQuartoId()));
+            reserva.setQuarto(quarto);
+        }
+
+        // Salva e retorna a reserva atualizada
+        return reservaRepository.save(reserva);
     }
-
 }
-
-
