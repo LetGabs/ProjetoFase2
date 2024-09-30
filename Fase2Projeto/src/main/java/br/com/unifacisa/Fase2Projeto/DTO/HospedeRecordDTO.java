@@ -33,6 +33,11 @@ public class HospedeRecordDTO {
     @NotNull(message = "O número de celular é obrigatório")
     @Pattern(regexp = "\\d{11}", message = "O número de celular deve ter 11 dígitos")
     private String contato;
+
+    // O campo hotelId é obrigatório
+    @NotNull(message = "O hotelId é obrigatório")
+    private Integer hotelId;
+
     @NotNull(message = "A lista de reservas não pode ser nula")
     private List<Integer> idReservas;
 
@@ -83,6 +88,14 @@ public class HospedeRecordDTO {
 
     public void setContato(String contato) {
         this.contato = contato;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
     }
 
     public List<Integer> getIdReservas() {

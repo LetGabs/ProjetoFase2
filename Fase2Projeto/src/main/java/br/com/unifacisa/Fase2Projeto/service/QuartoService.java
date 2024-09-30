@@ -1,9 +1,9 @@
 package br.com.unifacisa.Fase2Projeto.service;
 
-
 import br.com.unifacisa.Fase2Projeto.DTO.QuartoRecordDTO;
-import br.com.unifacisa.Fase2Projeto.entities.Hospede;
+import br.com.unifacisa.Fase2Projeto.entities.Hotel;
 import br.com.unifacisa.Fase2Projeto.entities.Quarto;
+import br.com.unifacisa.Fase2Projeto.repository.HotelRepository;
 import br.com.unifacisa.Fase2Projeto.repository.QuartoRepository;
 import br.com.unifacisa.Fase2Projeto.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,13 @@ public class QuartoService {
 
     private final QuartoRepository quartoRepository;
     private final ReservaRepository reservaRepository;
+    private final HotelRepository hotelRepository; // Adicionado repositório do Hotel
+
     @Autowired
-    public QuartoService(QuartoRepository quartoRepository, ReservaRepository reservaRepository) {
+    public QuartoService(QuartoRepository quartoRepository, ReservaRepository reservaRepository, HotelRepository hotelRepository) {
         this.quartoRepository = quartoRepository;
         this.reservaRepository = reservaRepository;
+        this.hotelRepository = hotelRepository; // Inicializado o repositório do Hotel
     }
 
     public Quarto save(QuartoRecordDTO quartoRecordDTO) {
@@ -30,6 +33,13 @@ public class QuartoService {
         quarto.setStatus(quartoRecordDTO.getStatus());
         quarto.setCapacidade(quartoRecordDTO.getCapacidade());
         quarto.setPreco(quartoRecordDTO.getPreco());
+
+        // Buscar a entidade Hotel pelo hotelId
+        Hotel hotel = hotelRepository.findById(quartoRecordDTO.getHotelId())
+                .orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + quartoRecordDTO.getHotelId()));
+        quarto.setHotel(hotel); // Definir o objeto Hotel
+
+        // Se existirem reservas, busca todas pelo ID
         if (quartoRecordDTO.getIdReservas() != null && !quartoRecordDTO.getIdReservas().isEmpty()) {
             quarto.setReservas(reservaRepository.findAllById(quartoRecordDTO.getIdReservas()).stream().collect(Collectors.toList()));
         } else {
@@ -38,7 +48,6 @@ public class QuartoService {
 
         return quartoRepository.save(quarto);
     }
-
 
     public List<Quarto> getAll() {
         return quartoRepository.findAll();
@@ -53,17 +62,21 @@ public class QuartoService {
     }
 
     public Quarto update(Integer id, QuartoRecordDTO quartoRecordDTO) {
-        Quarto quarto = quartoRepository.findById(id).get(); // Pega o quarto existente pelo ID
+        Quarto quarto = quartoRepository.findById(id).orElseThrow(() -> new RuntimeException("Quarto não encontrado com ID: " + id));
+
         quarto.setTipoQuarto(quartoRecordDTO.getTipoQuarto());
         quarto.setStatus(quartoRecordDTO.getStatus());
         quarto.setCapacidade(quartoRecordDTO.getCapacidade());
         quarto.setPreco(quartoRecordDTO.getPreco());
 
+        // Atualizar o hotel, se houver alteração
+        Hotel hotel = hotelRepository.findById(quartoRecordDTO.getHotelId())
+                .orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + quartoRecordDTO.getHotelId()));
+        quarto.setHotel(hotel); // Atualizar a referência ao hotel
+
         // Atualiza as reservas se existirem
         quarto.setReservas(reservaRepository.findAllById(quartoRecordDTO.getIdReservas()).stream().collect(Collectors.toList()));
 
-        // Corrigido para usar a instância do quartoRepository
         return quartoRepository.save(quarto);
     }
-
 }

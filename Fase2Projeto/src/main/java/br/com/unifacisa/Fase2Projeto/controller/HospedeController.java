@@ -29,6 +29,7 @@ public class HospedeController {
     public Hospede saveHospede(@RequestBody HospedeRecordDTO hospedeRecordDTO){
         return hospedeService.save(hospedeRecordDTO);
     }
+
     @GetMapping("/{id}") // buscar por id
     public Hospede getHospedeById(@PathVariable Integer id) {
         return hospedeService.findById(id).orElse(null);

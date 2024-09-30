@@ -2,6 +2,7 @@ package br.com.unifacisa.Fase2Projeto.DTO;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,8 +25,12 @@ public class QuartoRecordDTO {
 
     // Preço do quarto deve ser maior que 0
     @NotNull(message = "O preço é obrigatório")
-    @Min(value = 0, message = "O preço deve ser positivo")
+    @DecimalMin(value = "0.01", message = "O preço deve ser maior que zero")
     private BigDecimal preco;
+
+    // O campo hotelId é obrigatório
+    @NotNull(message = "O hotelId é obrigatório")
+    private Integer hotelId;
 
     @NotNull(message = "A lista de reservas não pode ser nula")
     private List<Integer> idReservas;
@@ -69,6 +74,14 @@ public class QuartoRecordDTO {
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
     }
 
     public List<Integer> getIdReservas() {
