@@ -43,4 +43,5 @@ public List<Hospede> getAll(){
         hospedeRepository.deleteById(id);
     }
 
+
 }

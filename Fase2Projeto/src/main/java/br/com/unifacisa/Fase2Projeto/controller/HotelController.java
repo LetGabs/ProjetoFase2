@@ -38,4 +38,9 @@ public class HotelController {
     public void deleteHotel(@PathVariable Integer id) {
         hotelService.delete(id);
     }
+    // Método para atualizar um hotel existente
+    @PutMapping("/{id}")
+    public Hotel updateHotel(@PathVariable Integer id, @RequestBody HotelRecordDTO hotelRecordDTO) {
+        return hotelService.update(id, hotelRecordDTO);
+    }
 }

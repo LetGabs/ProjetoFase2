@@ -41,4 +41,15 @@ public class HotelService {
     public void delete(Integer id) {
         hotelRepository.deleteById(id);
     }
-}
+    public Hotel update(Integer id, HotelRecordDTO hotelRecordDTO) {
+        Hotel hotel = hotelRepository.findById(id).get();
+        hotel.setNome(hotelRecordDTO.getNome());
+        hotel.setEndereco(hotelRecordDTO.getEndereco());
+        hotel.setQuartos(quartoRepository.findAllById(hotelRecordDTO.getIdQuartos()).stream().collect(Collectors.toList()));;
+            return hotelRepository.save(hotel);
+        }
+
+    }
+
+
+
