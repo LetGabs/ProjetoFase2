@@ -1,6 +1,8 @@
 package br.com.unifacisa.Fase2Projeto.controller;
 
+import br.com.unifacisa.Fase2Projeto.DTO.QuartoRecordDTO;
 import br.com.unifacisa.Fase2Projeto.DTO.ReservaRecordDTO;
+import br.com.unifacisa.Fase2Projeto.entities.Quarto;
 import br.com.unifacisa.Fase2Projeto.entities.Reserva;
 import br.com.unifacisa.Fase2Projeto.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +39,9 @@ public class ReservaController {
     @DeleteMapping("/{id}")
     public void deleteReserva(@PathVariable Integer id) {
         reservaService.delete(id);
+    }
+    @PutMapping("/{id}")
+    public Reserva updateReserva(@PathVariable Integer id, @RequestBody ReservaRecordDTO reservaRecordDTO) {
+        return reservaService.update(id, reservaRecordDTO);
     }
 }

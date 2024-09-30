@@ -1,6 +1,8 @@
 package br.com.unifacisa.Fase2Projeto.service;
 import br.com.unifacisa.Fase2Projeto.DTO.HospedeRecordDTO;
+import br.com.unifacisa.Fase2Projeto.DTO.HotelRecordDTO;
 import br.com.unifacisa.Fase2Projeto.entities.Hospede;
+import br.com.unifacisa.Fase2Projeto.entities.Hotel;
 import br.com.unifacisa.Fase2Projeto.repository.HospedeRepository;
 import br.com.unifacisa.Fase2Projeto.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +45,16 @@ public List<Hospede> getAll(){
         hospedeRepository.deleteById(id);
     }
 
+
+    public Hospede update(Integer id, HospedeRecordDTO hospedeRecordDTO) {
+        Hospede hospede = hospedeRepository.findById(id).get();
+        hospede.setNome(hospedeRecordDTO.getNome());
+        hospede.setCpf(hospedeRecordDTO.getCpf());
+        hospede.setContato(hospedeRecordDTO.getContato());
+        hospede.setEndereco(hospedeRecordDTO.getEndereco());
+        hospede.setDataNascimento(hospedeRecordDTO.getDataNascimento());
+        hospede.setReservas(reservaRepository.findAllById(hospedeRecordDTO.getIdReservas()).stream().collect(Collectors.toList()));
+        return hospedeRepository.save(hospede);
+    }
 
 }

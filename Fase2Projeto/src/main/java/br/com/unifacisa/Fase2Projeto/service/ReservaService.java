@@ -5,6 +5,7 @@ import br.com.unifacisa.Fase2Projeto.entities.Hospede;
 import br.com.unifacisa.Fase2Projeto.entities.Quarto;
 import br.com.unifacisa.Fase2Projeto.entities.Reserva;
 import br.com.unifacisa.Fase2Projeto.repository.ReservaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,43 @@ public class ReservaService {
     public void delete(Integer id) {
         reservaRepository.deleteById(id);
     }
+
+    public Reserva update(Integer id, ReservaRecordDTO reservaRecordDTO) {
+        // Procura a reserva existente pelo ID
+        Optional<Reserva> optionalReserva = reservaRepository.findById(id);
+
+        if (optionalReserva.isPresent()) {
+            Reserva reserva = optionalReserva.get();
+
+            // Atualiza os campos da reserva com os dados do DTO
+            reserva.setDataCheckin(reservaRecordDTO.getDataCheckin());
+            reserva.setDataCheckout(reservaRecordDTO.getDataCheckout());
+
+            // Verificando e atualizando o hóspede
+            if (reservaRecordDTO.getHospede() != null && reservaRecordDTO.getHospede().getId() != null) {
+                Optional<Hospede> hospedeOpt = hospedeService.findById(reservaRecordDTO.getHospede().getId());
+                if (hospedeOpt.isEmpty()) {
+                    throw new IllegalArgumentException("Hóspede não encontrado");
+                }
+                reserva.setHospede(hospedeOpt.get());
+            }
+
+            // Verificando e atualizando o quarto
+            if (reservaRecordDTO.getQuarto() != null && reservaRecordDTO.getQuarto().getId() != null) {
+                Optional<Quarto> quartoOpt = quartoService.findById(reservaRecordDTO.getQuarto().getId());
+                if (quartoOpt.isEmpty()) {
+                    throw new IllegalArgumentException("Quarto não encontrado");
+                }
+                reserva.setQuarto(quartoOpt.get());
+            }
+
+            // Salva e retorna a reserva atualizada
+            return reservaRepository.save(reserva);
+        } else {
+            throw new EntityNotFoundException("Reserva não encontrada com o ID: " + id);
+        }
+    }
+
 }
 
 

@@ -2,6 +2,7 @@ package br.com.unifacisa.Fase2Projeto.service;
 
 
 import br.com.unifacisa.Fase2Projeto.DTO.QuartoRecordDTO;
+import br.com.unifacisa.Fase2Projeto.entities.Hospede;
 import br.com.unifacisa.Fase2Projeto.entities.Quarto;
 import br.com.unifacisa.Fase2Projeto.repository.QuartoRepository;
 import br.com.unifacisa.Fase2Projeto.repository.ReservaRepository;
@@ -50,4 +51,19 @@ public class QuartoService {
     public void delete(Integer id) {
         quartoRepository.deleteById(id);
     }
+
+    public Quarto update(Integer id, QuartoRecordDTO quartoRecordDTO) {
+        Quarto quarto = quartoRepository.findById(id).get(); // Pega o quarto existente pelo ID
+        quarto.setTipoQuarto(quartoRecordDTO.getTipoQuarto());
+        quarto.setStatus(quartoRecordDTO.getStatus());
+        quarto.setCapacidade(quartoRecordDTO.getCapacidade());
+        quarto.setPreco(quartoRecordDTO.getPreco());
+
+        // Atualiza as reservas se existirem
+        quarto.setReservas(reservaRepository.findAllById(quartoRecordDTO.getIdReservas()).stream().collect(Collectors.toList()));
+
+        // Corrigido para usar a instância do quartoRepository
+        return quartoRepository.save(quarto);
+    }
+
 }

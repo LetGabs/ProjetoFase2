@@ -1,7 +1,9 @@
 package br.com.unifacisa.Fase2Projeto.controller;
 
 import br.com.unifacisa.Fase2Projeto.DTO.HospedeRecordDTO;
+import br.com.unifacisa.Fase2Projeto.DTO.HotelRecordDTO;
 import br.com.unifacisa.Fase2Projeto.entities.Hospede;
+import br.com.unifacisa.Fase2Projeto.entities.Hotel;
 import br.com.unifacisa.Fase2Projeto.service.HospedeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,12 @@ public class HospedeController {
     public void deleteHospede(@PathVariable Integer id) {
         hospedeService.delete(id);
     }
+    @PutMapping("/{id}")
+    public Hospede updateHospede(@PathVariable Integer id, @RequestBody HospedeRecordDTO hospedeRecordDTO) {
+        return hospedeService.update(id, hospedeRecordDTO);
+    }
 }
+
+
 
 

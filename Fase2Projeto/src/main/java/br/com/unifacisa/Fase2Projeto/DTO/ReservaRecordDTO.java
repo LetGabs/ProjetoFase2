@@ -53,7 +53,7 @@ public class ReservaRecordDTO {
         this.dataCheckout = dataCheckout;
     }
 
-    public HospedeRecordDTO getHospede() {
+    public @NotNull(message = "O hóspede é obrigatório") HospedeRecordDTO getHospede() {
         return hospede;
     }
 
@@ -61,7 +61,7 @@ public class ReservaRecordDTO {
         this.hospede = hospede;
     }
 
-    public QuartoRecordDTO getQuarto() {
+    public @NotNull(message = "O quarto é obrigatório") QuartoRecordDTO getQuarto() {
         return quarto;
     }
 

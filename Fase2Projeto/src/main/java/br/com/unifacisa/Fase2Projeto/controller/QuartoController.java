@@ -1,6 +1,8 @@
 package br.com.unifacisa.Fase2Projeto.controller;
 
+import br.com.unifacisa.Fase2Projeto.DTO.HospedeRecordDTO;
 import br.com.unifacisa.Fase2Projeto.DTO.QuartoRecordDTO;
+import br.com.unifacisa.Fase2Projeto.entities.Hospede;
 import br.com.unifacisa.Fase2Projeto.entities.Quarto;
 import br.com.unifacisa.Fase2Projeto.service.QuartoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,10 @@ public class QuartoController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build(); // 404 Not Found
         }
+    }
+    @PutMapping("/{id}")
+    public Quarto updateQuarto(@PathVariable Integer id, @RequestBody QuartoRecordDTO quartoRecordDTO) {
+        return quartoService.update(id, quartoRecordDTO);
     }
 
 }
